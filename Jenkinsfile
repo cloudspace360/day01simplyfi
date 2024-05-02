@@ -5,7 +5,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build('my-docker-image')  // Replace 'my-docker-image' with your desired image name
+                    docker.build('my-python-app')  // Replace 'my-python-app' with your desired image name
                 }
             }
         }
@@ -13,7 +13,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    docker.run('my-docker-image')  // Replace 'my-docker-image' with the image name you built
+                    docker.image('my-python-app').run('-p 8080:8080')  // Replace 'my-python-app' with the image name you built
                 }
             }
         }
