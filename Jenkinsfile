@@ -1,26 +1,22 @@
 pipeline {
-    agent {
-        dockerfile {
-            filename 'Dockerfile'
-            label 'my-docker-agent'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any
+    
     stages {
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                sh 'echo "Building..."'
+                script {
+                    docker.build('my-python-app')  // Replace 'my-python-app' with your desired image name
+                }
             }
         }
-        stage('Test') {
+        
+        stage('Run Docker Container') {
             steps {
-                sh 'echo "Testing..."'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                sh 'echo "Deploying..."'
+                script {
+                    docker.image('my-python-app').run('-p 8082:8080')  // Replace 'my-python-app' with the image name you built
+                }
             }
         }
     }
 }
+
