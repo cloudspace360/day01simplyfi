@@ -22,5 +22,25 @@ pipeline {
                 }
             }
         }
+
+        stage('Delete image') {
+            steps {
+               script {
+                    // Delete Docker image if it exists
+                    def imageTag = env.BUILD_NUMBER
+                    def imageName = "my-image:${imageTag}"
+ 
+                    // Check if the image exists
+                    def imageExists = sh(script: "docker images -q ${imageName}", returnStatus: true) == 0
+ 
+                    if (imageExists) {
+                        sh "docker rmi -f ${imageName}"
+                    } else {
+                        echo "Image ${imageName} does not exist."
+                    }
+                }
+            }
     }
 }
+}
+        
