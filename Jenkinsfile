@@ -13,6 +13,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
+                    docker.image('my-python-app').remove(force: true)
                     docker.image('my-python-app').run('-p 8082:8080')  // Replace 'my-python-app' with the image name you built
                 }
             }
