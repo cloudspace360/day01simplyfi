@@ -12,9 +12,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Find an available port dynamically
-                    def port = findAvailablePort()
-                    docker.image("my-docker-image:${env.BUILD_NUMBER}").run("-p ${port}:80")
+                    docker.image("my-docker-image:${env.BUILD_NUMBER}").run('-p 8081:80')
                 }
             }
         }
@@ -27,11 +25,4 @@ pipeline {
             }
         }
     }
-}
-
-def findAvailablePort() {
-    def socket = new java.net.ServerSocket(0)
-    def port = socket.getLocalPort()
-    socket.close()
-    return port
 }
