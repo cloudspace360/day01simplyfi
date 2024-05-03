@@ -22,13 +22,15 @@ pipeline {
 }
 
     }
-stage('Declarative: Post Actions') {
-    steps {
-        script {
-            sh "docker rm -f my-docker-container-${env.BUILD_NUMBER} || true"
-            docker.image("my-docker-image:${env.BUILD_NUMBER}").remove()
+
+    post {
+        always {
+            // Clean up any resources here
+            script {
+                sh 'docker rm -f my-docker-container-${env.BUILD_NUMBER} || true'
+                docker.image("my-docker-image:${env.BUILD_NUMBER}").remove()
+            }
         }
-    }
-}
+    }    
 
 }
