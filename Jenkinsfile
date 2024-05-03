@@ -20,8 +20,7 @@ pipeline {
                     }
 
                     // Run the new container
-                    def port = findAvailablePort()
-                    docker.image("my-docker-image:${env.BUILD_NUMBER}").run("-p ${port}:80", name: "my-docker-container-${env.BUILD_NUMBER}")
+                    docker.image("my-docker-image:${env.BUILD_NUMBER}").run("-p 8081:80", name: "my-docker-container-${env.BUILD_NUMBER}")
                 }
             }
         }
@@ -34,11 +33,4 @@ pipeline {
             }
         }
     }
-}
-
-def findAvailablePort() {
-    def socket = new java.net.ServerSocket(0)
-    def port = socket.getLocalPort()
-    socket.close()
-    return port
 }
