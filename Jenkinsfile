@@ -20,7 +20,11 @@ pipeline {
                     }
 
                     // Run the new container
-                    docker.image("my-docker-image:${env.BUILD_NUMBER}").run("-p 8081:80", name: "my-docker-container-${env.BUILD_NUMBER}")
+                    def container = docker.image("my-docker-image:${env.BUILD_NUMBER}")
+                        .run("-p 8081:80", name: "my-docker-container-${env.BUILD_NUMBER}")
+
+                    // Save container ID to use in post-build cleanup
+                    env.CONTAINER_ID = container.id
                 }
             }
         }
@@ -29,6 +33,8 @@ pipeline {
         always {
             // Clean up any resources here
             script {
+                docker.container(env.CONTAINER_ID).stop()
+                docker.container(env.CONTAINER_ID).remove(force: true)
                 docker.image("my-docker-image:${env.BUILD_NUMBER}").remove()
             }
         }
