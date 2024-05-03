@@ -13,18 +13,10 @@ pipeline {
             steps {
                 script {
                     // Remove previous container if it exists
-                    def previousContainer = docker.container("my-docker-container-${env.BUILD_NUMBER}")
-                    if (previousContainer) {
-                        previousContainer.stop()
-                        previousContainer.remove(force: true)
-                    }
+                    sh 'docker rm -f my-docker-container-${env.BUILD_NUMBER} || true'
 
                     // Run the new container
-                    def container = docker.image("my-docker-image:${env.BUILD_NUMBER}")
-                        .run("-p 8081:80", name: "my-docker-container-${env.BUILD_NUMBER}")
-
-                    // Save container ID to use in post-build cleanup
-                    env.CONTAINER_ID = container.id
+                    sh 'docker run -d -p 8081:80 --name my-docker-container-${env.BUILD_NUMBER} my-docker-image:${env.BUILD_NUMBER}'
                 }
             }
         }
@@ -33,8 +25,7 @@ pipeline {
         always {
             // Clean up any resources here
             script {
-                docker.container(env.CONTAINER_ID).stop()
-                docker.container(env.CONTAINER_ID).remove(force: true)
+                sh 'docker rm -f my-docker-container-${env.BUILD_NUMBER} || true'
                 docker.image("my-docker-image:${env.BUILD_NUMBER}").remove()
             }
         }
