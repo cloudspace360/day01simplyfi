@@ -3,6 +3,8 @@ pipeline {
     
     environment {
         CONTAINER_CREATED = false
+        CLIENT_SERVER = '35.173.249.130' // Replace 'your-client-server' with the hostname or IP address of your client server
+        SSH_CREDENTIALS = 'client-ssh-credentials' // Replace 'your-ssh-credentials' with the name of your SSH credentials configured in Jenkins
     }
     
     stages {
@@ -16,11 +18,11 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    // Remove previous container if it exists
-                    sh "docker rm -f my-docker-container-${env.BUILD_NUMBER} || true"
+                    // Remove previous container if it exists on client server
+                    sh "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${env.SSH_CREDENTIALS}@${env.CLIENT_SERVER} 'docker rm -f my-docker-container-${env.BUILD_NUMBER} || true'"
 
-                    // Run the new container
-                    def exitCode = sh script: "docker run -d -p 8081:80 --name my-docker-container-${env.BUILD_NUMBER} my-docker-image:${env.BUILD_NUMBER}", returnStatus: true
+                    // Run the new container on client server
+                    def exitCode = sh script: "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${env.SSH_CREDENTIALS}@${env.CLIENT_SERVER} 'docker run -d -p 8081:80 --name my-docker-container-${env.BUILD_NUMBER} my-docker-image:${env.BUILD_NUMBER}'", returnStatus: true
                     if (exitCode == 0) {
                         env.CONTAINER_CREATED = true
                     }
@@ -31,14 +33,13 @@ pipeline {
     
     post {
         always {
-            //Clean up any resources here
+            // Clean up any resources here
             script {
                 if (env.CONTAINER_CREATED) {
-                   sh "docker rm -f my-docker-container-${env.BUILD_NUMBER} || true"
+                    sh "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${env.SSH_CREDENTIALS}@${env.CLIENT_SERVER} 'docker rm -f my-docker-container-${env.BUILD_NUMBER} || true'"
                 }
                 docker.image("my-docker-image:${env.BUILD_NUMBER}").remove()
             }
         }
     }    
 }
-
