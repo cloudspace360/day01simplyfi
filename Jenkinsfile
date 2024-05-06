@@ -31,10 +31,10 @@ pipeline {
     
     post {
         always {
-            // Clean up any resources here
+            //Clean up any resources here
             script {
                 if (env.CONTAINER_CREATED) {
-                   // sh "docker rm -f my-docker-container-${env.BUILD_NUMBER} || true"
+                   sh "docker rm -f my-docker-container-${env.BUILD_NUMBER} || true"
                 }
                 docker.image("my-docker-image:${env.BUILD_NUMBER}").remove()
             }
