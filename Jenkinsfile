@@ -22,7 +22,7 @@ pipeline {
                    // sh "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${env.SSH_CREDENTIALS}@${env.CLIENT_SERVER} 'docker rm -f my-docker-container-${env.BUILD_NUMBER} || true'"
 
                     // Run the new container on client server
-                    def exitCode = sh script: "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${env.SSH_CREDENTIALS}@${env.CLIENT_SERVER} 'docker run -d -p 8081:80 --name my-docker-container-${env.BUILD_NUMBER} my-docker-image:${env.BUILD_NUMBER}'", returnStatus: true
+                    def exitCode = sh script: "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${env.SSH_CREDENTIALS}@${env.CLIENT_SERVER} 'docker run -d -p 8085:80 --name my-docker-container-${env.BUILD_NUMBER} my-docker-image:${env.BUILD_NUMBER}'", returnStatus: true
                     if (exitCode == 0) {
                         env.CONTAINER_CREATED = true
                     }
