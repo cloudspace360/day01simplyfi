@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
     
@@ -23,13 +22,13 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'Galvinaries', variable: 'dockerhubpwd')]) {
-                        sh '''
-                            docker login -u Galvinaries -p "${dockerhubpwd}" --password-stdin
+                        sh """
+                            echo "${dockerhubpwd}" | docker login -u Galvinaries --password-stdin
                             VERSION=$(printf "%d.%d" $(expr ${BUILD_NUMBER} / 10) $(expr ${BUILD_NUMBER} % 10))
                             sudo -S docker build -t my-docker-image:${VERSION} .
                             sudo -S docker tag my-docker-image:${VERSION} galvinaries/simplyfiday01:${VERSION}
                             sudo -S docker push galvinaries/simplyfiday01:${VERSION}
-                        '''
+                        """
                     }
                 }
             }
