@@ -8,23 +8,21 @@ pipeline {
     }
     
     stages {
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.build("my-docker-image:${env.BUILD_NUMBER}")
-                }
-            }
-        }
-        stage('Run Docker Container') {
+        stage('Build and push Docker Image') {
             steps {
 
                 sh '''
                     echo 'y6d-p.7Z%5Uedxv' | sudo -S docker login -u Galvinaries --password-stdin
                     VERSION=$(printf "%d.%d" $(expr ${BUILD_NUMBER} / 10) $(expr ${BUILD_NUMBER} % 10))
                     sudo -S docker build -t my-docker-image:${VERSION} .
-                    sudo -S docker tag my-image:${VERSION} galvinaries/simplyfiday01:${VERSION}
+                    sudo -S docker tag my-docker-image:${VERSION} galvinaries/simplyfiday01:${VERSION}
                     sudo -S docker push galvinaries/simplyfiday01:${VERSION}
                 '''
+            }
+
+        }
+        stage('Run Docker Container') {
+            steps {
 
                 script {
                     // Remove previous container if it exists on client server
