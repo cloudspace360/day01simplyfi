@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         CONTAINER_CREATED = false
-        CLIENT_SERVER = '3.85.240.202' // Replace 'your-client-server' with the hostname or IP address of your client server
+        CLIENT_SERVER = '52.91.38.54' // Replace 'your-client-server' with the hostname or IP address of your client server
         SSH_CREDENTIALS = 'ubuntu' // Replace 'your-ssh-credentials' with the name of your SSH credentials configured in Jenkins
     }
     
