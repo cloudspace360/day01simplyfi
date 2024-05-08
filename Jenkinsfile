@@ -24,8 +24,8 @@ pipeline {
                     withCredentials([string(credentialsId: 'Galvinaries', variable: 'dockerhubpwd')]) {
                         sh '''
                             VERSION=$(printf "%d.%d" $(expr ${BUILD_NUMBER} / 10) $(expr ${BUILD_NUMBER} % 10))
-                            sudo -S docker tag my-docker-image:${VERSION} galvinaries/simplyfiday01:${VERSION}
-                            sudo -S docker push galvinaries/simplyfiday01:${VERSION}
+                            docker tag my-docker-image:${VERSION} galvinaries/simplyfiday01:${VERSION}
+                            docker push galvinaries/simplyfiday01:${VERSION}
                         '''
                     }
                 }
