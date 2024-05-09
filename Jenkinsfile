@@ -25,8 +25,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    
-                    def exitCode = sh script: "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${env.SSH_CREDENTIALS}@${env.CLIENT_SERVER}", label: 'Run Docker Container', script: '''
+                     sshScript remote: "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER}", label: 'Run Docker Container', script: '''
                         sudo apt update
                         sudo apt install -y docker.io
                         sudo usermod -aG docker jenkins
