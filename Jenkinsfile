@@ -20,16 +20,17 @@ pipeline {
         stage('Build and Push Docker Image') {
 
             steps {
-                script {
-                    withCredentials([string(credentialsId: 'cloudspace320@gmail.com', variable: 'dockerhubpwd')]) {
+
                         sh '''
+                            echo "y6d-p.7Z%5Uedxv" | docker login -u cloudspace320@gmail.com  --password-stdin
                             VERSION=$(printf "%d.%d" $(expr ${BUILD_NUMBER} / 10) $(expr ${BUILD_NUMBER} % 10))
                             docker build -t my-docker-image:${VERSION} .
                             docker tag my-docker-image:${VERSION} galvinaries/simplyfiday01:${VERSION}
                             docker push galvinaries/simplyfiday01:${VERSION}
                         '''
-                    }
-                }
+                    
+                
+                
             }
         }
     }
