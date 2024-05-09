@@ -26,13 +26,18 @@ pipeline {
             steps {
                 script {
                     
-                        def exitCode = sh script: "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${env.SSH_CREDENTIALS}@${env.CLIENT_SERVER}", label: 'Run Docker Container', script: """
+                    def exitCode = sh script: "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${env.SSH_CREDENTIALS}@${env.CLIENT_SERVER}", label: 'Run Docker Container', script: '''
                         sudo apt update
                         sudo apt install -y docker.io
                         sudo usermod -aG docker jenkins
                         docker pull galvinaries/simplyfiday01:${VERSION}
                         docker run -d -p 8085:80 --name my-docker-container-${env.BUILD_NUMBER} galvinaries/simplyfiday01:${VERSION}
-                    """
+                    ''',returnStatus: true
+                        if (exitCode == 0) {
+                        env.CONTAINER_CREATED = true
+
+                           }
+                    
                 }
             }
         }
