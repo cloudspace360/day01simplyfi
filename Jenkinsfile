@@ -21,8 +21,10 @@ pipeline {
                         // Tag the Docker image with the repository and version
                         sh "docker tag my-docker-image:${VERSION} galvinaries/simplyfiday01:${VERSION}"
 
+                        // Login to Docker Hub securely
+                        sh "echo ${dockerhubpwd} | docker login -u Galvinaries --password-stdin"
+
                         // Push the Docker image to the Docker Hub repository
-                        sh "docker login -u Galvinaries -p ${dockerhubpwd}"
                         sh "docker push galvinaries/simplyfiday01:${VERSION}"
                     }
                 }
