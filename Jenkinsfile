@@ -29,7 +29,7 @@ pipeline {
                         sudo apt update
                         sudo apt install -y docker.io
                         sudo usermod -aG docker jenkins
-                        docker pull ${galvinaries/simplyfiday01:${VERSION}}
+                        docker pull galvinaries/simplyfiday01:${VERSION}
                         docker run -d -p 8085:80 --name my-docker-container-${env.BUILD_NUMBER} galvinaries/simplyfiday01:${VERSION}
                     """
                 }
