@@ -16,7 +16,7 @@ pipeline {
         //        }
           //  }
         //}
-    
+
         stage('Build and Push Docker Image') {
 
             steps {
@@ -33,20 +33,49 @@ pipeline {
                 
             }
         }
-         stage('Run Docker Container'){
-
+    
+        stage('Run Docker Container') {
+            //Insatall docker container in remote
             steps {
                 script {
-                    // Run the new container on client server
-                    def exitCode = sh script: "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${env.SSH_CREDENTIALS}@${env.CLIENT_SERVER} 'docker run -d -p 8085:80 --name my-docker-container-${env.BUILD_NUMBER} my-docker-image:${env.BUILD_NUMBER}'", returnStatus: true
-                    if (exitCode == 0) {
+                    sshScript remote: "${SSH_CREDENTIALS}@${env.CLIENT_SERVER}", label: 'Install Docker', script: """
+                        sudo apt update
+                        sudo apt install -y docker.io
+                    """
+                }
+            }
+            //Configure Docker Remote Access
+            steps {
+                script {
+                    sshScript remote: "${SSH_CREDENTIALS}@${env.CLIENT_SERVER}", label: 'Configure Docker Remote Access', script: """
+                        sudo usermod -aG docker ${params.REMOTE_USER}
+                    """
+                }
+            }
+            //pull docker image 
+            steps {
+                script {
+                    sshScript remote: "${env.SSH_CREDENTIALS}@${env.CLIENT_SERVER}", label: 'Pull Docker Image', script: """
+                        docker pull ${params.DOCKER_IMAGE}
+                    """
+                }
+            }
+            //Run docker container inm remote
+            steps {
+                
+                    script{
+                        def exitCode = sh script: "ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${env.SSH_CREDENTIALS}@${env.CLIENT_SERVER} 'docker run -d -p 8085:80 --name my-docker-container-${env.BUILD_NUMBER} my-docker-image:${env.BUILD_NUMBER}'", returnStatus: true
+                        if (exitCode == 0) {
                         env.CONTAINER_CREATED = true
 
                            }
-                        }
-                  }       
+                    }
 
 
             }
+        }
+
+    
+
     }
 }
