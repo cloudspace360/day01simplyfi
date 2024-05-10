@@ -27,7 +27,8 @@ pipeline {
                 script {
                     //Remote config
                        
-                     script: "ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER}", label: 'Run Docker Container','''
+                      "ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER}"
+                    sh '''
                         sudo apt update
                         sudo apt install -y docker.io
                         sudo usermod -aG docker jenkins
