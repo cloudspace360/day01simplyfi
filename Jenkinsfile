@@ -12,7 +12,7 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                     '''
+                    sh '''
                         echo "y6d-p.7Z%5Uedxv" | docker login -u cloudspace320@gmail.com  --password-stdin
                         docker build -t my-docker-image:${VERSION} .
                         docker tag my-docker-image:${VERSION} galvinaries/simplyfiday01:${VERSION}
@@ -29,9 +29,8 @@ pipeline {
                     
                         //ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER}
 
-                     sh(script: 'ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER})'
-                        sh '''
-
+                     sh(script: 'ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER}')
+                   /*  sh '''
                         echo "connected sucessfully to the remote"
                         sudo apt update
                         sudo apt install -y docker.io
@@ -39,7 +38,7 @@ pipeline {
                         docker pull galvinaries/simplyfiday01:${VERSION}
                         docker run -d -p 8085:80 --name my-docker-container-${BUILD_NUMBER} galvinaries/simplyfiday01:${VERSION}
                     
-                    '''
+                    ''' */
                     
                     // Check if Docker container is created successfully
                     def exitCode = sh(script: 'ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER} docker ps -q --filter "name=my-docker-container-${BUILD_NUMBER}"', returnStatus: true)
