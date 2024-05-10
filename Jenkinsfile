@@ -22,28 +22,22 @@ pipeline {
             }
         }
     
-        stage('Run Docker Container') {
-            steps {
-                script {
-                    // SSH into the remote server and execute Docker commands
-                    sh '''
-                        ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER} << 'EOF'
-                        sudo apt update
-                        sudo apt install -y docker.io
-                        sudo usermod -aG docker jenkins
-                        docker pull galvinaries/simplyfiday01:${VERSION}
-                        docker run -d -p 8085:80 --name my-docker-container-${BUILD_NUMBER} galvinaries/simplyfiday01:${VERSION}
-                        EOF
-                    '''
-                    
-                    // Check if Docker container is created successfully
-                    def exitCode = sh(script: 'ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER} docker ps -q --filter "name=my-docker-container-${BUILD_NUMBER}"', returnStatus: true)
-                    
-                    if (exitCode == 0) {
-                        env.CONTAINER_CREATED = true
-                    }
-                }
-            }
+stage('Run Docker Container') {
+    steps {
+        script {
+            // SSH into the remote server and execute Docker commands
+            sh '''
+                ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER} << 'EOF'
+                sudo apt update
+                sudo apt install -y docker.io
+                sudo usermod -aG docker jenkins
+                docker pull galvinaries/simplyfiday01:${VERSION}
+                docker run -d -p 8085:80 --name my-docker-container-${BUILD_NUMBER} galvinaries/simplyfiday01:${VERSION}
+                EOF
+            '''
         }
+    }
+}
+
     }
 }
