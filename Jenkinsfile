@@ -12,7 +12,7 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    sh '''
+                     '''
                         echo "y6d-p.7Z%5Uedxv" | docker login -u cloudspace320@gmail.com  --password-stdin
                         docker build -t my-docker-image:${VERSION} .
                         docker tag my-docker-image:${VERSION} galvinaries/simplyfiday01:${VERSION}
