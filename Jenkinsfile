@@ -29,7 +29,7 @@ pipeline {
                     
                         //ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER}
 
-                       sh(script: "ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER}"), '''
+                       script: "ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER}", '''
 
                         echo "connected sucessfully to the remote"
                         sudo apt update
