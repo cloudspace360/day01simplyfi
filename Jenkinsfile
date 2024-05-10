@@ -27,7 +27,6 @@ pipeline {
                 script {
                     // SSH into the remote server and execute Docker commands
                     sh '''
-                        chmod 700 /var/lib/jenkins/.ssh/id_rsa
                         ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER} << 'EOF'
                         sudo apt update
                         sudo apt install -y docker.io
