@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     // SSH into the remote server and execute Docker commands
-                    sh '''
+                    sh """
                         ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER}
                         echo "connected sucessfully to the remote"
                         sudo apt update
@@ -35,7 +35,7 @@ pipeline {
                         docker pull galvinaries/simplyfiday01:${VERSION}
                         docker run -d -p 8085:80 --name my-docker-container-${BUILD_NUMBER} galvinaries/simplyfiday01:${VERSION}
                     
-                    '''
+                    """
                     
                     // Check if Docker container is created successfully
                     def exitCode = sh(script: 'ssh -i /var/lib/jenkins/.ssh/id_rsa ${SSH_CREDENTIALS}@${env.CLIENT_SERVER} docker ps -q --filter "name=my-docker-container-${BUILD_NUMBER}"', returnStatus: true)
