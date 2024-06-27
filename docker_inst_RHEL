@@ -1,15 +1,25 @@
 #!/bin/bash
-sudo yum update
+# Update system packages
+sudo yum update -y
+# Install prerequisites
 sudo yum install -y yum-utils
+# Add Docker repository
 sudo yum-config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
-sudo yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+# Install Docker packages
+sudo yum install -y docker-ce docker-ce-cli containerd.io
+# Start Docker service and enable it to start on boot
 sudo systemctl start docker
 sudo systemctl enable docker
+# Verify Docker installation
 sudo systemctl status docker
 docker --version
+# Add current user to the docker group
 sudo usermod -aG docker $USER
-#docker-compose installation
+echo "Please log out and log back in to apply Docker group membership."
+# Install Docker Compose
 sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
+# Verify Docker Compose installation
 docker-compose --version
+# Final Docker service status check
 sudo systemctl status docker
